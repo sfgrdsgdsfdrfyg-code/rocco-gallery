@@ -301,45 +301,27 @@
       return tagOptions[Math.floor(Math.random() * tagOptions.length)];
     }
 
-    async function loadNewCat() {
+    function loadNewCat() {
       const btn = document.querySelector('.refresh-btn');
       const img = document.getElementById('cat-image');
       const tag = document.getElementById('random-tag');
       
       btn.classList.add('loading');
       btn.disabled = true;
-      img.classList.remove('loaded');
-      img.classList.add('loading');
       
-      try {
-        const response = await fetch(API_URL + '?t=' + Date.now(), { 
-          cache: 'no-cache',
-          headers: { 'Cache-Control': 'no-cache' }
-        });
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        
-        img.onload = () => {
-          img.classList.remove('loading');
-          img.classList.add('loaded');
-          URL.revokeObjectURL(url);
-        };
-        img.onerror = () => {
-          img.classList.remove('loading');
-          img.src = 'https://placekitten.com/800/1000';
-          img.classList.add('loaded');
-        };
-        img.src = url;
-        
-        tag.textContent = getRandomTag();
-      } catch (err) {
-        console.error('Failed to load cat:', err);
-        img.src = 'https://placekitten.com/800/1000';
-        img.classList.add('loaded');
-      } finally {
+      // Use direct URL - add timestamp to prevent caching
+      img.src = API_URL + '?v=' + Date.now();
+      
+      img.onload = function() {
         btn.classList.remove('loading');
         btn.disabled = false;
-      }
+        tag.textContent = getRandomTag();
+      };
+      
+      img.onerror = function() {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+      };
     }
 
     // Load initial cat
