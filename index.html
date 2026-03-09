@@ -270,7 +270,7 @@
 
     <article class="card">
       <div class="image-container">
-        <img id="cat-image" class="loading" alt="Random cat" src="">
+        <img id="cat-image" alt="Random cat" src="" style="opacity: 0; transition: opacity 0.3s;">
         <div class="image-overlay"></div>
         <button class="refresh-btn" onclick="loadNewCat()">
           <span class="spinner"></span>
@@ -308,24 +308,27 @@
       
       btn.classList.add('loading');
       btn.disabled = true;
+      img.style.opacity = '0';
       
       // Use direct URL - add timestamp to prevent caching
       img.src = API_URL + '?v=' + Date.now();
       
       img.onload = function() {
+        img.style.opacity = '1';
         btn.classList.remove('loading');
         btn.disabled = false;
         tag.textContent = getRandomTag();
       };
       
       img.onerror = function() {
+        img.style.opacity = '1';
         btn.classList.remove('loading');
         btn.disabled = false;
       };
     }
 
     // Load initial cat
-    loadNewCat();
+    window.onload = loadNewCat;
   </script>
 </body>
 </html>
